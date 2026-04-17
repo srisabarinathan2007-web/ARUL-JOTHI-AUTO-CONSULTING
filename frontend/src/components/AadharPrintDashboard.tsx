@@ -11,7 +11,7 @@ let aiInstance: any = null;
 const getAI = () => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    throw new Error('GEMINI_API_KEY is missing. If you are on Vercel, please add it to your Environment Variables.');
+    return null;
   }
   if (!aiInstance) {
     aiInstance = new GoogleGenAI({ apiKey });
@@ -165,6 +165,11 @@ export default function AadharPrintDashboard() {
 
   const handleAiOcr = async () => {
     if (!cropModal) return;
+    const ai = getAI();
+    if (!ai) {
+      alert("AI Features require a GEMINI_API_KEY. Please add it to your environment variables to enable OCR.");
+      return;
+    }
     setIsOcrProcessing(true);
     try {
       const resizeImage = async (base64Str: string, maxWidth = 1024): Promise<string> => {
@@ -197,7 +202,7 @@ export default function AadharPrintDashboard() {
 
       const optimizedBase64 = await resizeImage(cropModal.image);
 
-      const response = await getAI().models.generateContent({
+      const response = await ai.models.generateContent({
         model: "gemini-flash-latest",
         contents: [
           {
@@ -225,6 +230,11 @@ export default function AadharPrintDashboard() {
 
   const handleAiMagicCrop = async () => {
     if (!cropModal) return;
+    const ai = getAI();
+    if (!ai) {
+      alert("AI Features require a GEMINI_API_KEY. Please add it to your environment variables to enable Magic Crop.");
+      return;
+    }
     setIsAiProcessing(true);
     try {
       const resizeImage = async (base64Str: string, maxWidth = 1024): Promise<string> => {
@@ -257,7 +267,7 @@ export default function AadharPrintDashboard() {
 
       const optimizedBase64 = await resizeImage(cropModal.image);
 
-      const response = await getAI().models.generateContent({
+      const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash-image',
         contents: {
           parts: [
@@ -293,6 +303,11 @@ export default function AadharPrintDashboard() {
 
   const handleAiSmartCrop = async () => {
     if (!cropModal) return;
+    const ai = getAI();
+    if (!ai) {
+      alert("AI Features require a GEMINI_API_KEY. Please add it to your environment variables to enable Smart Fix.");
+      return;
+    }
     setIsAiProcessing(true);
     try {
       // Optimize: Resize image before sending to AI
@@ -328,7 +343,7 @@ export default function AadharPrintDashboard() {
 
       const optimizedBase64 = await resizeImage(cropModal.image);
 
-      const response = await getAI().models.generateContent({
+      const response = await ai.models.generateContent({
         model: "gemini-flash-latest",
         contents: [
           {
@@ -414,6 +429,9 @@ export default function AadharPrintDashboard() {
         
         // Automatically trigger the Magic Crop AI for every upload
         // We call the logic directly here using the 'result' string
+        const ai = getAI();
+        if (!ai) return; // Skip auto-processing if AI is not available
+
         setIsAiProcessing(true);
         try {
           const resizeImage = async (base64Str: string, maxWidth = 1024): Promise<string> => {
@@ -446,7 +464,7 @@ export default function AadharPrintDashboard() {
 
           const optimizedBase64 = await resizeImage(result);
 
-          const response = await getAI().models.generateContent({
+          const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash-image',
             contents: {
               parts: [
