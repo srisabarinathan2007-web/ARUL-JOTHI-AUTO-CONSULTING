@@ -6,7 +6,18 @@ import Cropper, { Area } from 'react-easy-crop';
 import { GoogleGenAI, Type } from "@google/genai";
 import smartcrop from 'smartcrop';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+// Lazy initialize AI to avoid crashes if the key is missing during startup
+let aiInstance: any = null;
+const getAI = () => {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error('GEMINI_API_KEY is missing. If you are on Vercel, please add it to your Environment Variables.');
+  }
+  if (!aiInstance) {
+    aiInstance = new GoogleGenAI({ apiKey });
+  }
+  return aiInstance;
+};
 
 export default function AadharPrintDashboard() {
   const [frontImage, setFrontImage] = useState<string | null>(null);
@@ -186,7 +197,7 @@ export default function AadharPrintDashboard() {
 
       const optimizedBase64 = await resizeImage(cropModal.image);
 
-      const response = await ai.models.generateContent({
+      const response = await getAI().models.generateContent({
         model: "gemini-flash-latest",
         contents: [
           {
@@ -246,7 +257,7 @@ export default function AadharPrintDashboard() {
 
       const optimizedBase64 = await resizeImage(cropModal.image);
 
-      const response = await ai.models.generateContent({
+      const response = await getAI().models.generateContent({
         model: 'gemini-2.5-flash-image',
         contents: {
           parts: [
@@ -317,7 +328,7 @@ export default function AadharPrintDashboard() {
 
       const optimizedBase64 = await resizeImage(cropModal.image);
 
-      const response = await ai.models.generateContent({
+      const response = await getAI().models.generateContent({
         model: "gemini-flash-latest",
         contents: [
           {
@@ -435,7 +446,7 @@ export default function AadharPrintDashboard() {
 
           const optimizedBase64 = await resizeImage(result);
 
-          const response = await ai.models.generateContent({
+          const response = await getAI().models.generateContent({
             model: 'gemini-2.5-flash-image',
             contents: {
               parts: [

@@ -8,7 +8,7 @@ import { db } from '../firebase';
  */
 export async function syncVehicleWithApi(vehicle: Vehicle) {
   const meta = import.meta as any;
-  let apiKey = meta.env.VITE_VAHAN_API_KEY;
+  let apiKey = meta.env?.VITE_VAHAN_API_KEY;
   
   // If not in env, check Firestore settings
   if (!apiKey || apiKey === 'your_api_key_here') {

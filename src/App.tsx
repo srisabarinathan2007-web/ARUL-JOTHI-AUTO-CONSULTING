@@ -130,7 +130,7 @@ export default function App() {
     setSelectedVehicle(vehicle);
   };
 
-  const navItems = useMemo(() => [
+  const navItems: { id: typeof activeTab; label: string; icon: any; color: string; bg: string }[] = useMemo(() => [
     { id: 'vehicles', label: 'Vehicles', icon: Car, color: 'text-modern-blue', bg: 'bg-modern-blue/10' },
     { id: 'links', label: 'Links', icon: Globe, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
     { id: 'tax', label: 'Tax', icon: FileCheck, color: 'text-orange-500', bg: 'bg-orange-500/10' },
@@ -138,7 +138,7 @@ export default function App() {
     { id: 'accounts', label: 'Accounts', icon: CreditCard, color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
     { id: 'customer-bill', label: 'Bills', icon: Receipt, color: 'text-rose-500', bg: 'bg-rose-500/10' },
     { id: 'aadhar-print', label: 'Aadhar', icon: AadharIcon, color: 'text-violet-500', bg: 'bg-violet-500/10' },
-  ], []);
+  ], [AadharIcon]);
 
   if (!auth) {
     return <Login onLogin={handleLogin} />;

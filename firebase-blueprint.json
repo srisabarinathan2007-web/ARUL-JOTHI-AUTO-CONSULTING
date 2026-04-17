@@ -2,85 +2,85 @@
   "entities": {
     "Vehicle": {
       "title": "Vehicle",
-      "description": "A vehicle record with expiry dates for RTO documents.",
+      "description": "Represents a vehicle and its document expiry dates.",
       "type": "object",
       "properties": {
-        "plateNumber": { "type": "string", "description": "Vehicle registration number (e.g., TN-XX-XXXX)" },
+        "plateNumber": { "type": "string", "description": "Registration number of the vehicle" },
         "ownerName": { "type": "string", "description": "Name of the vehicle owner" },
-        "phoneNumber": { "type": "string", "description": "WhatsApp number for reminders (with country code)" },
-        "fcExpiry": { "type": "string", "format": "date", "description": "Fitness Certificate expiry date" },
+        "phoneNumber": { "type": "string", "description": "Contact number" },
+        "fcExpiry": { "type": "string", "format": "date", "description": "FC expiry date" },
         "permitExpiry": { "type": "string", "format": "date", "description": "Permit expiry date" },
         "insuranceExpiry": { "type": "string", "format": "date", "description": "Insurance expiry date" },
         "nationalPermitExpiry": { "type": "string", "format": "date", "description": "National Permit expiry date" },
-        "lastReminderSent": { "type": "string", "format": "date-time", "description": "Timestamp of the last reminder sent" },
-        "lastSync": { "type": "string", "format": "date-time", "description": "Timestamp of the last automatic sync" }
+        "createdAt": { "type": "string", "format": "date-time" },
+        "lastReminderSent": { "type": "string", "format": "date-time" },
+        "lastSync": { "type": "string", "format": "date-time" }
       },
       "required": ["plateNumber", "ownerName", "phoneNumber"]
     },
     "TaxRecord": {
-      "title": "Tax Record",
-      "description": "A record for vehicle tax details, separate from vehicle management.",
+      "title": "TaxRecord",
+      "description": "Represents a tax payment record for a vehicle.",
       "type": "object",
       "properties": {
-        "plateNumber": { "type": "string", "description": "Vehicle registration number" },
-        "ownerName": { "type": "string", "description": "Name of the vehicle owner" },
-        "phoneNumber": { "type": "string", "description": "WhatsApp number for reminders" },
-        "taxType": { "type": "string", "description": "Type of tax paid" },
-        "taxAmount": { "type": "string", "description": "Amount of tax paid" },
-        "gt": { "type": "string", "description": "Gross Total or specific tax field" },
-        "information": { "type": "string", "description": "Additional information" },
-        "inDate": { "type": "string", "format": "date", "description": "In date" },
-        "paidDate": { "type": "string", "format": "date", "description": "Paid date" },
-        "taxExpiry": { "type": "string", "format": "date", "description": "Tax expiry date" },
-        "lastReminderSent": { "type": "string", "format": "date-time", "description": "Timestamp of the last reminder sent" }
+        "plateNumber": { "type": "string" },
+        "ownerName": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "taxType": { "type": "string" },
+        "taxAmount": { "type": "string" },
+        "gt": { "type": "string" },
+        "information": { "type": "string" },
+        "paidDate": { "type": "string", "format": "date" },
+        "inDate": { "type": "string", "format": "date" },
+        "taxExpiry": { "type": "string", "format": "date" },
+        "createdAt": { "type": "string", "format": "date-time" }
       },
-      "required": ["plateNumber", "ownerName", "phoneNumber", "taxType", "taxAmount", "inDate", "paidDate"]
+      "required": ["plateNumber", "ownerName", "taxAmount"]
     },
     "BillingRecord": {
-      "title": "Billing Record",
-      "description": "A billing record for services provided by Arul Jothi Auto Consulting.",
+      "title": "BillingRecord",
+      "description": "Represents a service billing/account record.",
       "type": "object",
       "properties": {
-        "date": { "type": "string", "format": "date", "description": "Date of billing" },
-        "customerName": { "type": "string", "description": "Name of the customer" },
-        "phoneNumber": { "type": "string", "description": "Customer contact number" },
-        "vehicleNumber": { "type": "string", "description": "Vehicle registration number" },
-        "serviceDescription": { "type": "string", "description": "Description of services provided" },
-        "amount": { "type": "number", "description": "Total billing amount" },
-        "paymentStatus": { "type": "string", "enum": ["Paid", "Pending", "Partial"], "description": "Current status of payment" },
-        "paymentMode": { "type": "string", "enum": ["Cash", "UPI", "Bank Transfer", "Cheque"], "description": "Mode of payment" },
-        "notes": { "type": "string", "description": "Additional notes or details" },
-        "createdAt": { "type": "string", "format": "date-time", "description": "Record creation timestamp" }
+        "date": { "type": "string", "format": "date" },
+        "customerName": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "vehicleNumber": { "type": "string" },
+        "serviceDescription": { "type": "string" },
+        "amount": { "type": "number" },
+        "paidAmount": { "type": "number" },
+        "pendingAmount": { "type": "number" },
+        "paymentStatus": { "type": "string", "enum": ["Paid", "Pending", "Partial"] },
+        "paymentMode": { "type": "string", "enum": ["Cash", "UPI", "Bank Transfer", "Cheque"] },
+        "createdAt": { "type": "string", "format": "date-time" }
       },
-      "required": ["date", "customerName", "phoneNumber", "vehicleNumber", "serviceDescription", "amount", "paymentStatus", "paymentMode", "createdAt"]
+      "required": ["date", "customerName", "vehicleNumber", "amount"]
     },
-    "SystemSettings": {
-      "title": "System Settings",
-      "description": "Global application settings and API keys.",
+    "VahanConfig": {
+      "title": "VahanConfig",
+      "description": "System settings for the application.",
       "type": "object",
       "properties": {
-        "vahanApiKey": { "type": "string", "description": "API key for Vahan synchronization service" },
-        "whatsappInstanceId": { "type": "string", "description": "Instance ID for WhatsApp API (e.g., UltraMsg)" },
-        "whatsappToken": { "type": "string", "description": "Token for WhatsApp API" }
+        "expiryReminderDays": { "type": "number" }
       }
     }
   },
   "firestore": {
     "/vehicles/{vehicleId}": {
       "schema": "Vehicle",
-      "description": "Collection of vehicle records."
+      "description": "Collection of all vehicles."
     },
-    "/tax_records/{recordId}": {
+    "/tax_records/{taxId}": {
       "schema": "TaxRecord",
-      "description": "Collection of tax records."
+      "description": "Collection of tax payment history."
     },
-    "/billing_records/{billId}": {
+    "/billing_records/{billingId}": {
       "schema": "BillingRecord",
-      "description": "Collection of billing and invoice records."
+      "description": "Collection of billing and accounting records."
     },
-    "/settings/{settingId}": {
-      "schema": "SystemSettings",
-      "description": "Global configuration settings."
+    "/settings/vahan_config": {
+      "schema": "VahanConfig",
+      "description": "Global system configuration."
     }
   }
 }

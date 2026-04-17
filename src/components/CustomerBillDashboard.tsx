@@ -18,8 +18,7 @@ export default function CustomerBillDashboard() {
     customerName: '',
     phoneNumber: '',
     paidAmount: 0,
-    paymentMode: 'Cash' as 'Cash' | 'UPI' | 'Bank Transfer' | 'Cheque',
-    paymentStatus: 'Paid' as 'Paid' | 'Pending' | 'Partial'
+    paymentMode: 'Cash' as 'Cash' | 'UPI' | 'Bank Transfer' | 'Cheque'
   });
 
   const [items, setItems] = useState<ManualBillItem[]>([
@@ -79,18 +78,18 @@ export default function CustomerBillDashboard() {
         img.onerror = resolve;
       });
       if (img.complete && img.naturalWidth > 0) {
-        doc.addImage(img, 'PNG', 20, 5, 25, 25);
+        doc.addImage(img, 'PNG', 20, 10, 22, 22);
       }
     } catch (e) {
       console.error("Logo failed to load for PDF", e);
     }
 
     doc.setTextColor(gold[0], gold[1], gold[2]);
-    doc.setFontSize(20);
+    doc.setFontSize(22);
     doc.setFont('helvetica', 'bold');
-    doc.text('ARUL JOTHI', 20, 35);
-    doc.setFontSize(14);
-    doc.text('AUTO CONSULTING', 20, 42);
+    doc.text('ARUL JOTHI', 48, 24);
+    doc.setFontSize(11);
+    doc.text('AUTO CONSULTING', 48, 31);
 
     // 3. INVOICE Title (Right)
     doc.setTextColor(gold[0], gold[1], gold[2]);
@@ -278,7 +277,7 @@ export default function CustomerBillDashboard() {
             </div>
             <div>
               <h3 className="text-sm font-black text-modern-text uppercase tracking-widest">Payment Info</h3>
-              <p className="text-[10px] text-modern-muted font-bold uppercase tracking-widest mt-0.5">Manage billing status</p>
+              <p className="text-[10px] text-modern-muted font-bold uppercase tracking-widest mt-0.5">Manage transaction details</p>
             </div>
           </div>
 
@@ -293,7 +292,7 @@ export default function CustomerBillDashboard() {
                 onChange={(e) => setFormData({ ...formData, paidAmount: Number(e.target.value) })}
               />
             </div>
-            <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-modern-muted uppercase tracking-widest ml-1">Payment Mode</label>
                 <select
@@ -305,18 +304,6 @@ export default function CustomerBillDashboard() {
                   <option value="UPI">UPI</option>
                   <option value="Bank Transfer">Bank Transfer</option>
                   <option value="Cheque">Cheque</option>
-                </select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-modern-muted uppercase tracking-widest ml-1">Status</label>
-                <select
-                  className="w-full px-6 py-4 bg-slate-50 border border-modern-border rounded-2xl focus:ring-4 focus:ring-modern-blue/5 focus:border-modern-blue outline-none transition-all font-bold text-modern-text"
-                  value={formData.paymentStatus}
-                  onChange={(e) => setFormData({ ...formData, paymentStatus: e.target.value as any })}
-                >
-                  <option value="Paid">Paid</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Partial">Partial</option>
                 </select>
               </div>
             </div>

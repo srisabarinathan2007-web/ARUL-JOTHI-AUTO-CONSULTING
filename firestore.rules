@@ -6,32 +6,20 @@ service cloud.firestore {
     // ===============================================================
     //
     // Collection: vehicles
-    // Document ID: auto-generated
-    // Fields:
-    //   - plateNumber: string (required, TN-XX-XXXX format)
-    //   - ownerName: string (required, < 100 chars)
-    //   - phoneNumber: string (required, 10-15 chars)
-    //   - fcExpiry: string (optional, ISO date)
-    //   - permitExpiry: string (optional, ISO date)
-    //   - insuranceExpiry: string (optional, ISO date)
-    //   - nationalPermitExpiry: string (optional, ISO date)
-    //   - lastReminderSent: string (optional, ISO date-time)
+    // Fields: plateNumber, ownerName, phoneNumber, fcExpiry, permitExpiry, insuranceExpiry, nationalPermitExpiry, createdAt, lastReminderSent, lastSync
     //
     // Collection: tax_records
-    // Document ID: auto-generated
-    // Fields:
-    //   - plateNumber: string (required)
-    //   - ownerName: string (required)
-    //   - phoneNumber: string (required)
-    //   - taxExpiry: string (required, ISO date)
-    //   - lastReminderSent: string (optional, ISO date-time)
+    // Fields: plateNumber, ownerName, phoneNumber, taxType, taxAmount, gt, information, paidDate, inDate, taxExpiry, createdAt
+    //
+    // Collection: billing_records
+    // Fields: date, customerName, phoneNumber, vehicleNumber, serviceDescription, amount, paidAmount, pendingAmount, paymentStatus, paymentMode, createdAt
+    //
+    // Collection: settings/vahan_config
+    // Fields: expiryReminderDays
     //
     // ===============================================================
 
-    // ===============================================================
     // Helper Functions
-    // ===============================================================
-    
     function isAuthenticated() {
       return request.auth != null;
     }
@@ -40,46 +28,47 @@ service cloud.firestore {
       return data.keys().hasAll(['plateNumber', 'ownerName', 'phoneNumber']) &&
              data.plateNumber is string && data.plateNumber.size() > 0 && data.plateNumber.size() < 20 &&
              data.ownerName is string && data.ownerName.size() > 0 && data.ownerName.size() < 100 &&
-             data.phoneNumber is string && data.phoneNumber.size() >= 10 && data.phoneNumber.size() <= 15 &&
-             (!('fcExpiry' in data) || data.fcExpiry is string) &&
-             (!('permitExpiry' in data) || data.permitExpiry is string) &&
-             (!('insuranceExpiry' in data) || data.insuranceExpiry is string) &&
-             (!('nationalPermitExpiry' in data) || data.nationalPermitExpiry is string);
+             data.phoneNumber is string && data.phoneNumber.size() >= 10 && data.phoneNumber.size() <= 15;
     }
 
     function isValidTaxRecord(data) {
-      return data.keys().hasAll(['plateNumber', 'ownerName', 'phoneNumber', 'taxType', 'taxAmount', 'inDate', 'paidDate']) &&
-             data.plateNumber is string && data.plateNumber.size() > 0 &&
-             data.ownerName is string && data.ownerName.size() > 0 &&
-             data.phoneNumber is string && data.phoneNumber.size() >= 10 &&
-             data.taxType is string &&
-             data.taxAmount is string &&
-             data.inDate is string &&
-             data.paidDate is string;
+      return data.keys().hasAll(['plateNumber', 'ownerName', 'taxAmount']) &&
+             data.plateNumber is string && data.plateNumber.size() < 20 &&
+             data.ownerName is string && data.ownerName.size() < 100;
     }
 
-    // ===============================================================
-    // Rules
-    // ===============================================================
+    function isValidBillingRecord(data) {
+      return data.keys().hasAll(['date', 'customerName', 'vehicleNumber', 'amount']) &&
+             data.customerName is string && data.customerName.size() < 100 &&
+             data.vehicleNumber is string && data.vehicleNumber.size() < 20 &&
+             data.amount is number;
+    }
+
+    match /_connection_test_/ping {
+      allow read, write: if true;
+    }
 
     match /vehicles/{vehicleId} {
-      allow read, write: if true;
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() && isValidVehicle(request.resource.data);
+      allow delete: if isAuthenticated();
     }
 
-    match /tax_records/{recordId} {
-      allow read, write: if true;
+    match /tax_records/{taxId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() && isValidTaxRecord(request.resource.data);
+      allow delete: if isAuthenticated();
     }
 
-    match /settings/{settingId} {
-      allow read, write: if true;
+    match /billing_records/{billingId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() && isValidBillingRecord(request.resource.data);
+      allow delete: if isAuthenticated();
     }
 
-    match /billing_records/{billId} {
-      allow read, write: if true;
-    }
-
-    match /_connection_test_/{testId} {
+    match /settings/vahan_config {
       allow read: if true;
+      allow write: if isAuthenticated();
     }
   }
 }

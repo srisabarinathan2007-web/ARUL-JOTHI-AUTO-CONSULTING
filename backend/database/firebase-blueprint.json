@@ -1,0 +1,86 @@
+{
+  "entities": {
+    "Vehicle": {
+      "title": "Vehicle",
+      "description": "A vehicle record with expiry dates for RTO documents.",
+      "type": "object",
+      "properties": {
+        "plateNumber": { "type": "string", "description": "Vehicle registration number (e.g., TN-XX-XXXX)" },
+        "ownerName": { "type": "string", "description": "Name of the vehicle owner" },
+        "phoneNumber": { "type": "string", "description": "WhatsApp number for reminders (with country code)" },
+        "fcExpiry": { "type": "string", "format": "date", "description": "Fitness Certificate expiry date" },
+        "permitExpiry": { "type": "string", "format": "date", "description": "Permit expiry date" },
+        "insuranceExpiry": { "type": "string", "format": "date", "description": "Insurance expiry date" },
+        "nationalPermitExpiry": { "type": "string", "format": "date", "description": "National Permit expiry date" },
+        "lastReminderSent": { "type": "string", "format": "date-time", "description": "Timestamp of the last reminder sent" },
+        "lastSync": { "type": "string", "format": "date-time", "description": "Timestamp of the last automatic sync" }
+      },
+      "required": ["plateNumber", "ownerName", "phoneNumber"]
+    },
+    "TaxRecord": {
+      "title": "Tax Record",
+      "description": "A record for vehicle tax details, separate from vehicle management.",
+      "type": "object",
+      "properties": {
+        "plateNumber": { "type": "string", "description": "Vehicle registration number" },
+        "ownerName": { "type": "string", "description": "Name of the vehicle owner" },
+        "phoneNumber": { "type": "string", "description": "WhatsApp number for reminders" },
+        "taxType": { "type": "string", "description": "Type of tax paid" },
+        "taxAmount": { "type": "string", "description": "Amount of tax paid" },
+        "gt": { "type": "string", "description": "Gross Total or specific tax field" },
+        "information": { "type": "string", "description": "Additional information" },
+        "inDate": { "type": "string", "format": "date", "description": "In date" },
+        "paidDate": { "type": "string", "format": "date", "description": "Paid date" },
+        "taxExpiry": { "type": "string", "format": "date", "description": "Tax expiry date" },
+        "lastReminderSent": { "type": "string", "format": "date-time", "description": "Timestamp of the last reminder sent" }
+      },
+      "required": ["plateNumber", "ownerName", "phoneNumber", "taxType", "taxAmount", "inDate", "paidDate"]
+    },
+    "BillingRecord": {
+      "title": "Billing Record",
+      "description": "A billing record for services provided by Arul Jothi Auto Consulting.",
+      "type": "object",
+      "properties": {
+        "date": { "type": "string", "format": "date", "description": "Date of billing" },
+        "customerName": { "type": "string", "description": "Name of the customer" },
+        "phoneNumber": { "type": "string", "description": "Customer contact number" },
+        "vehicleNumber": { "type": "string", "description": "Vehicle registration number" },
+        "serviceDescription": { "type": "string", "description": "Description of services provided" },
+        "amount": { "type": "number", "description": "Total billing amount" },
+        "paymentStatus": { "type": "string", "enum": ["Paid", "Pending", "Partial"], "description": "Current status of payment" },
+        "paymentMode": { "type": "string", "enum": ["Cash", "UPI", "Bank Transfer", "Cheque"], "description": "Mode of payment" },
+        "notes": { "type": "string", "description": "Additional notes or details" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Record creation timestamp" }
+      },
+      "required": ["date", "customerName", "phoneNumber", "vehicleNumber", "serviceDescription", "amount", "paymentStatus", "paymentMode", "createdAt"]
+    },
+    "SystemSettings": {
+      "title": "System Settings",
+      "description": "Global application settings and API keys.",
+      "type": "object",
+      "properties": {
+        "vahanApiKey": { "type": "string", "description": "API key for Vahan synchronization service" },
+        "whatsappInstanceId": { "type": "string", "description": "Instance ID for WhatsApp API (e.g., UltraMsg)" },
+        "whatsappToken": { "type": "string", "description": "Token for WhatsApp API" }
+      }
+    }
+  },
+  "firestore": {
+    "/vehicles/{vehicleId}": {
+      "schema": "Vehicle",
+      "description": "Collection of vehicle records."
+    },
+    "/tax_records/{recordId}": {
+      "schema": "TaxRecord",
+      "description": "Collection of tax records."
+    },
+    "/billing_records/{billId}": {
+      "schema": "BillingRecord",
+      "description": "Collection of billing and invoice records."
+    },
+    "/settings/{settingId}": {
+      "schema": "SystemSettings",
+      "description": "Global configuration settings."
+    }
+  }
+}
