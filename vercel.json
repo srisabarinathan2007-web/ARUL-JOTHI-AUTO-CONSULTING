@@ -1,8 +1,0 @@
-{
-  "version": 2,
-  "public": true,
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/backend/server.ts" },
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
-}
